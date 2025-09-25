@@ -4,10 +4,21 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { db } from '@/lib/prisma';
 import { SearchIcon } from 'lucide-react';
 import Image from 'next/image';
+import BeerItem from '@/components/beer-item';
+import { quickSearchOptions } from '@/components/_constants/search';
+import BookingItem from '@/components/booking-item';
 
-const Home = () => {
+const Home = async () => {
+  const barbershops = await db.barbershop.findMany({});
+  const popularBarbershop = await db.barbershop.findMany({
+    orderBy: {
+      name: 'desc',
+    },
+  });
+
   return (
     <div>
       <Header />
@@ -25,6 +36,24 @@ const Home = () => {
           </Button>
         </div>
 
+        <div className='flex gap-3 mt-6 overflow-auto'>
+          {quickSearchOptions.map(option => (
+            <Button
+              className='gap-2'
+              variant={'secondary'}
+              key={option.title}
+            >
+              <Image
+                src={option.imageUrl}
+                width={14}
+                height={16}
+                alt={option.title}
+              />
+              {option.title}
+            </Button>
+          ))}
+        </div>
+
         <div className='relative mt-6 h-[150px] w-full'>
           <Image
             src='/banner-01.png'
@@ -35,28 +64,41 @@ const Home = () => {
         </div>
 
         {/* AGENDA   */}
-        <Card className='mt-6'>
-          <CardContent className='flex justify-between p-0'>
-            <div className='flx flex-col gap-2 py-5 pl-5'>
-              <Badge>Confirmado</Badge>
-              <h3 className='font-semibold text-2xl'>Corte de Cabelo</h3>
+        <BookingItem />
 
-              <div className='flex items-center gap-2 mt-2'>
-                <Avatar className='h-6 w-6'>
-                  <AvatarImage src='https://utfs.io/f/5832df58-cfd7-4b3f-b102-42b7e150ced2-16r.png' />
-                </Avatar>
-                <p className='text-sm'>Beer App</p>
-              </div>
-            </div>
-
-            <div className='flex flex-col items-center justify-center border-l-2 border-solid px-5'>
-              <p className='text-sm'>Agosto</p>
-              <p className='text-sm'>05</p>
-              <p className='text-sm'>Agosto</p>
-            </div>
+        <h2 className='mb-3 mt-6 text-xs font-bold uppercase text-gray-400'>
+          RECOMENDADOS
+        </h2>
+        <div className='flex gap-4 overflow-auto'>
+          {barbershops.map(barbershop => (
+            <BeerItem
+              key={barbershop.id}
+              barbershop={barbershop}
+            />
+          ))}
+        </div>
+        <h2 className='mb-3 mt-6 text-xs font-bold uppercase text-gray-400'>
+          Populares
+        </h2>
+        <div className='flex gap-4 overflow-auto'>
+          {popularBarbershop.map(barbershop => (
+            <BeerItem
+              key={barbershop.id}
+              barbershop={barbershop}
+            />
+          ))}
+        </div>
+      </div>
+      <footer>
+        <Card>
+          <CardContent className='px-5 py-6'>
+            <p className='text-sm text-gray-400'>
+              2025 Copyright <span>JAPA </span>
+            </p>
           </CardContent>
         </Card>
-      </div>
+      </footer>
+      :
     </div>
   );
 };
