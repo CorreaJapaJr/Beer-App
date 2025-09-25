@@ -11,7 +11,7 @@ const BookingItem = () => {
 
       <Card className='mt-6'>
         <CardContent className='flex justify-between p-0'>
-          <div className='flx flex-col gap-2 py-5 pl-5'>
+          <div className='flx flex-col gap-2 p-5 pl-5'>
             <Badge>Confirmado</Badge>
             <h3 className='font-semibold text-2xl'>Corte de Cabelo</h3>
 
