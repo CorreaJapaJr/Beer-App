@@ -1,34 +1,94 @@
+'use client';
 import { Button } from './ui/button';
-import { CalendarIcon, HomeIcon, LogOutIcon } from 'lucide-react';
+import {
+  AtSign,
+  CalendarIcon,
+  HomeIcon,
+  LogInIcon,
+  LogOutIcon,
+} from 'lucide-react';
 import { SheetContent, SheetHeader, SheetTitle } from './ui/sheet';
 import { quickSearchOptions } from './_constants/search';
 import { Avatar } from './ui/avatar';
 import { AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
 import Image from 'next/image';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from './ui/dialog';
+import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
+import { signIn, signOut, useSession } from 'next-auth/react';
+
 const SidebarSheet = () => {
+  const { data } = useSession();
+  const handleLoginCLick = async () => {
+    await signIn('google');
+  };
+  const handleLogoutLick = async () => {
+    await signOut();
+  };
+
   return (
     <SheetContent className='overflow-y-auto'>
       <SheetHeader>
         <SheetTitle className='text-left'>Menu</SheetTitle>
       </SheetHeader>
 
-      <div className='py-5 flex items-center border-b border-solid gap-3'>
-        <Avatar>
-          <AvatarImage src='https://images.unsplash.com/photo-1740252117070-7aa2955b25f8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGF2YXRhcmVzfGVufDB8fDB8fHww' />
-        </Avatar>
-        <div>
-          <p className='font-semibold'>Reginaldo da Rosa</p>
-          <p className='text-xs font-semibold text-gray-400'>
-            reginaldo@gmail.com
-          </p>
-        </div>
+      {/* Header com usuário ou login */}
+      <div className='py-5 flex items-center justify-between border-b border-solid gap-3'>
+        {data?.user ? (
+          <div className='flex items-center gap-2'>
+            <Avatar>
+              <AvatarImage src={data?.user?.image ?? ''} />
+            </Avatar>
+
+            <div>
+              <p className='font-bold'>{data.user.name}</p>
+              <p className='text-xs'>{data.user.email}</p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <h2 className='font-semibold'>Olá, faça seu Login</h2>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size='icon'>
+                  <LogInIcon />
+                </Button>
+              </DialogTrigger>
+
+              <DialogContent className='w-[80%] rounded-lg'>
+                <DialogHeader>
+                  <DialogTitle>Faça seu login</DialogTitle>
+                  <DialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your account and remove your data from our servers.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <Button
+                  variant='outline'
+                  className='gap-2'
+                  onClick={handleLoginCLick}
+                >
+                  <AtSign />
+                  <p>Acesse pelo gmail</p>
+                </Button>
+              </DialogContent>
+            </Dialog>
+          </>
+        )}
       </div>
 
+      {/* Menu principal */}
       <div className='py-5 flex flex-col gap-4 border-b border-solid'>
         <Button
           className='gap-2 justify-start'
-          variant={'ghost'}
+          variant='ghost'
           asChild
         >
           <Link href='/'>
@@ -39,19 +99,20 @@ const SidebarSheet = () => {
 
         <Button
           className='gap-2 justify-start'
-          variant={'ghost'}
+          variant='ghost'
         >
           <CalendarIcon />
           Agendamentos
         </Button>
       </div>
 
+      {/* Quick search */}
       <div className='py-5 flex flex-col gap-4 border-b border-solid'>
         {quickSearchOptions.map(option => (
           <Button
-            className='gap-2 justify-start'
-            variant={'ghost'}
             key={option.title}
+            className='gap-2 justify-start'
+            variant='ghost'
           >
             <Image
               src={option.imageUrl}
@@ -63,10 +124,13 @@ const SidebarSheet = () => {
           </Button>
         ))}
       </div>
+
+      {/* Logout */}
       <div className='py-5 flex flex-col gap-4 border-b border-solid'>
         <Button
           className='justify-start gap-2'
           variant='ghost'
+          onClick={handleLogoutLick}
         >
           <LogOutIcon />
           Sair da Conta
