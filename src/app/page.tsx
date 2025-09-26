@@ -2,13 +2,14 @@ import Header from '@/components/header';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+
 import { db } from '@/lib/prisma';
-import { SearchIcon } from 'lucide-react';
+
 import Image from 'next/image';
 import BeerItem from '@/components/beer-item';
 import { quickSearchOptions } from '@/components/_constants/search';
 import BookingItem from '@/components/booking-item';
+import Search from '@/components/search';
 
 const Home = async () => {
   const barbershops = await db.barbershop.findMany({});
@@ -26,13 +27,7 @@ const Home = async () => {
         <p className='text-xs font-semibold'> Segunda feira, 10 de agosto</p>
 
         <div className='mt-6 flex items-center gap-2'>
-          <Input placeholder='Faça sua busca....' />
-          <Button
-            size='icon'
-            variant={'outline'}
-          >
-            <SearchIcon />
-          </Button>
+          <Search />
         </div>
 
         <div className='flex gap-3 mt-6 overflow-auto'>
