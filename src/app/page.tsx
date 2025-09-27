@@ -10,6 +10,7 @@ import BeerItem from '@/components/beer-item';
 import { quickSearchOptions } from '@/components/_constants/search';
 import BookingItem from '@/components/booking-item';
 import Search from '@/components/search';
+import Link from 'next/link';
 
 const Home = async () => {
   const barbershops = await db.barbershop.findMany({});
@@ -36,14 +37,17 @@ const Home = async () => {
               className='gap-2'
               variant={'secondary'}
               key={option.title}
+              asChild
             >
-              <Image
-                src={option.imageUrl}
-                width={14}
-                height={16}
-                alt={option.title}
-              />
-              {option.title}
+              <Link href={`barbershops?service=${option.title}`}>
+                <Image
+                  src={option.imageUrl}
+                  width={14}
+                  height={16}
+                  alt={option.title}
+                />
+                {option.title}
+              </Link>
             </Button>
           ))}
         </div>
