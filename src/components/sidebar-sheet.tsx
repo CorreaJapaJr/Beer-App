@@ -1,32 +1,20 @@
 'use client';
 import { Button } from './ui/button';
-import {
-  AtSign,
-  CalendarIcon,
-  HomeIcon,
-  LogInIcon,
-  LogOutIcon,
-} from 'lucide-react';
+import { CalendarIcon, HomeIcon, LogInIcon, LogOutIcon } from 'lucide-react';
 import { SheetContent, SheetHeader, SheetTitle } from './ui/sheet';
 import { quickSearchOptions } from './_constants/search';
 import { Avatar } from './ui/avatar';
 import { AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
 import Image from 'next/image';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from './ui/dialog';
-import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
+
+import { signOut, useSession } from 'next-auth/react';
+import SignInDialog from './sign-in-dialog';
 
 const SidebarSheet = () => {
   const { data } = useSession();
-  const handleLoginCLick = async () => {
-    await signIn('google');
-  };
+
   const handleLogoutLick = async () => {
     await signOut();
   };
@@ -60,24 +48,8 @@ const SidebarSheet = () => {
                   <LogInIcon />
                 </Button>
               </DialogTrigger>
-
-              <DialogContent className='w-[80%] rounded-lg'>
-                <DialogHeader>
-                  <DialogTitle>Faça seu login</DialogTitle>
-                  <DialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    your account and remove your data from our servers.
-                  </DialogDescription>
-                </DialogHeader>
-
-                <Button
-                  variant='outline'
-                  className='gap-2'
-                  onClick={handleLoginCLick}
-                >
-                  <AtSign />
-                  <p>Acesse pelo gmail</p>
-                </Button>
+              <DialogContent className='w-[90%]'>
+                <SignInDialog />
               </DialogContent>
             </Dialog>
           </>
@@ -129,16 +101,18 @@ const SidebarSheet = () => {
       </div>
 
       {/* Logout */}
-      <div className='py-5 flex flex-col gap-4 border-b border-solid'>
-        <Button
-          className='justify-start gap-2'
-          variant='ghost'
-          onClick={handleLogoutLick}
-        >
-          <LogOutIcon />
-          Sair da Conta
-        </Button>
-      </div>
+      {data?.user && (
+        <div className='py-5 flex flex-col gap-4 border-b border-solid'>
+          <Button
+            className='justify-start gap-2'
+            variant='ghost'
+            onClick={handleLogoutLick}
+          >
+            <LogOutIcon />
+            Sair da Conta
+          </Button>
+        </div>
+      )}
     </SheetContent>
   );
 };
