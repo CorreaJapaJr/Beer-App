@@ -1,4 +1,4 @@
-import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
+import { DialogTitle } from '@radix-ui/react-dialog';
 import { DialogHeader } from './ui/dialog';
 import { Button } from './ui/button';
 import { AtSign } from 'lucide-react';
@@ -11,11 +11,7 @@ const SignInDialog = () => {
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Faça seu login</DialogTitle>
-        <DialogDescription>
-          This action cannot be undone. This will permanently delete your
-          account and remove your data from our servers.
-        </DialogDescription>
+        <DialogTitle>Olá, Faça seu login... </DialogTitle>
       </DialogHeader>
 
       <Button
@@ -24,7 +20,7 @@ const SignInDialog = () => {
         onClick={handleLoginCLick}
       >
         <AtSign />
-        <p>Acesse pelo gmail</p>
+        <p>Google</p>
       </Button>
     </>
   );

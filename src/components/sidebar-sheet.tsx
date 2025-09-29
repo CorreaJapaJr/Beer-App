@@ -40,7 +40,7 @@ const SidebarSheet = () => {
           </div>
         ) : (
           <>
-            <h2 className='font-semibold'>Olá, faça seu Login</h2>
+            <h2 className='font-semibold'>Olá, faça seu login... </h2>
 
             <Dialog>
               <DialogTrigger asChild>

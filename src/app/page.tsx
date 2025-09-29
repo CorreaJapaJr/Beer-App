@@ -48,27 +48,33 @@ const Home = async () => {
   return (
     <div>
       <Header />
-      <div className='p-5'>
-        <h2 className='text-xl font-bold'>
-          Olá, {session?.user ? session.user.name : 'Bem vindo'}
-        </h2>
-        <p className='text-xs font-semibold'>
-          {format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR })}
-        </p>
 
-        <div className='mt-6 flex items-center gap-2'>
+      <div className='p-5 space-y-6'>
+        {/* Saudação */}
+        <div>
+          <h2 className='text-xl font-bold'>
+            Olá, {session?.user ? session.user.name : 'Bem-vindo'}
+          </h2>
+          <p className='text-xs font-semibold text-gray-500'>
+            {format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR })}
+          </p>
+        </div>
+
+        {/* Busca */}
+        <div className='flex items-center gap-2'>
           <Search />
         </div>
 
-        <div className='flex gap-3 mt-6 overflow-auto'>
+        {/* Opções rápidas */}
+        <div className='flex gap-3 overflow-x-auto'>
           {quickSearchOptions.map(option => (
             <Button
-              className='gap-2'
-              variant={'secondary'}
               key={option.title}
+              variant='secondary'
+              className='gap-2 whitespace-nowrap'
               asChild
             >
-              <Link href={`barbershops?service=${option.title}`}>
+              <Link href={`/barbershops?service=${option.title}`}>
                 <Image
                   src={option.imageUrl}
                   width={14}
@@ -81,55 +87,65 @@ const Home = async () => {
           ))}
         </div>
 
-        <div className='relative mt-6 h-[150px] w-full'>
+        {/* Banner */}
+        <div className='relative h-[150px] w-full'>
           <Image
             src='/banner-01.png'
-            alt='banner'
+            alt='Banner'
             fill
             className='rounded-xl object-cover'
           />
         </div>
 
-        <h2 className='mb-3 mt-4 text-xs font-bold uppercase text-gray-400'>
-          AGENDAMENTOS
-        </h2>
+        {/* Agendamentos */}
+        <section>
+          <h2 className='mb-3 text-sm font-bold uppercase text-gray-400'>
+            Agendamentos
+          </h2>
 
-        {/* AGENDA */}
-        {confirmeBookings.length === 0 ? (
-          <p className='text-sm text-gray-500'>Não há agendamentos.</p>
-        ) : (
-          <div className='flex overflow-auto gap-3'>
-            {confirmeBookings.map(booking => (
-              <BookingItem
-                key={booking.id}
-                booking={booking}
+          {confirmeBookings.length === 0 ? (
+            <p className='text-sm text-gray-500'>Não há agendamentos.</p>
+          ) : (
+            <div className='flex gap-3 overflow-x-auto'>
+              {confirmeBookings.map(booking => (
+                <BookingItem
+                  key={booking.id}
+                  booking={booking}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Recomendados */}
+        <section>
+          <h2 className='mb-3 text-xs font-bold uppercase text-gray-400'>
+            Recomendados
+          </h2>
+          <div className='flex gap-4 overflow-x-auto'>
+            {barbershops.map(barbershop => (
+              <BeerItem
+                key={barbershop.id}
+                barbershop={barbershop}
               />
             ))}
           </div>
-        )}
+        </section>
 
-        <h2 className='mb-3 mt-6 text-xs font-bold uppercase text-gray-400'>
-          RECOMENDADOS
-        </h2>
-        <div className='flex gap-4 overflow-auto'>
-          {barbershops.map(barbershop => (
-            <BeerItem
-              key={barbershop.id}
-              barbershop={barbershop}
-            />
-          ))}
-        </div>
-        <h2 className='mb-3 mt-6 text-xs font-bold uppercase text-gray-400'>
-          Populares
-        </h2>
-        <div className='flex gap-4 overflow-auto'>
-          {popularBarbershop.map(barbershop => (
-            <BeerItem
-              key={barbershop.id}
-              barbershop={barbershop}
-            />
-          ))}
-        </div>
+        {/* Populares */}
+        <section>
+          <h2 className='mb-3 text-xs font-bold uppercase text-gray-400'>
+            Populares
+          </h2>
+          <div className='flex gap-4 overflow-x-auto'>
+            {popularBarbershop.map(barbershop => (
+              <BeerItem
+                key={barbershop.id}
+                barbershop={barbershop}
+              />
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );

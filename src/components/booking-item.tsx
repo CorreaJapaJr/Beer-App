@@ -69,8 +69,8 @@ const BookingItem = ({ booking }: BookingItemProps) => {
         open={isSheetOpen}
         onOpenChange={handleSheetOpenChange}
       >
-        <SheetTrigger className='w-full min-w-[90%]'>
-          <Card className='min-w-[90%] mt-6'>
+        <SheetTrigger className='w-full min-w-[90%] min-h-[90%]'>
+          <Card className='min-w-[90%] min-h-[90%] mt-6'>
             <CardContent className='flex justify-between p-0'>
               <div className='flx flex-col gap-2 p-5 pl-5'>
                 <Badge
@@ -79,7 +79,7 @@ const BookingItem = ({ booking }: BookingItemProps) => {
                 >
                   {isConfirmed ? 'Confirmado' : 'Finalizado'}
                 </Badge>
-                <h3 className='font-semibold text-2xl'>
+                <h3 className='font-semibold text-xl'>
                   {booking?.service.name}
                 </h3>
 
@@ -87,7 +87,7 @@ const BookingItem = ({ booking }: BookingItemProps) => {
                   <Avatar className='h-6 w-6'>
                     <AvatarImage src={booking?.service.barbershop.imageUrl} />
                   </Avatar>
-                  <h3 className='font-semibold text-2xl'>
+                  <h3 className='font-semibold text-xs'>
                     {booking?.service.barbershop.name}
                   </h3>
                 </div>
