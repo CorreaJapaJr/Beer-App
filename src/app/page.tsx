@@ -11,14 +11,38 @@ import { quickSearchOptions } from '@/components/_constants/search';
 import BookingItem from '@/components/booking-item';
 import Search from '@/components/search';
 import Link from 'next/link';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
 const Home = async () => {
+  const session = await getServerSession(authOptions);
   const barbershops = await db.barbershop.findMany({});
   const popularBarbershop = await db.barbershop.findMany({
     orderBy: {
       name: 'desc',
     },
   });
+
+  const confirmeBookings = session?.user
+    ? await db.booking.findMany({
+        where: {
+          userId: (session.user as any).id,
+          date: {
+            gte: new Date(),
+          },
+        },
+        include: {
+          service: {
+            include: {
+              barbershop: true,
+            },
+          },
+        },
+        orderBy: {
+          date: 'asc',
+        },
+      })
+    : [];
 
   return (
     <div>
@@ -61,8 +85,23 @@ const Home = async () => {
           />
         </div>
 
-        {/* AGENDA   */}
-        <BookingItem />
+        <h2 className='mb-3 mt-4 text-xs font-bold uppercase text-gray-400'>
+          AGENDAMENTOS
+        </h2>
+
+        {/* AGENDA */}
+        {confirmeBookings.length === 0 ? (
+          <p className='text-sm text-gray-500'>Não há agendamentos.</p>
+        ) : (
+          <div className='flex overflow-x-auto gap-3'>
+            {confirmeBookings.map(booking => (
+              <BookingItem
+                key={booking.id}
+                booking={booking}
+              />
+            ))}
+          </div>
+        )}
 
         <h2 className='mb-3 mt-6 text-xs font-bold uppercase text-gray-400'>
           RECOMENDADOS

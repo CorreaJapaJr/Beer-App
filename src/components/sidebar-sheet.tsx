@@ -72,9 +72,12 @@ const SidebarSheet = () => {
         <Button
           className='gap-2 justify-start'
           variant='ghost'
+          asChild
         >
-          <CalendarIcon />
-          Agendamentos
+          <Link href='/bookings'>
+            <CalendarIcon />
+            Agendamentos
+          </Link>
         </Button>
       </div>
 

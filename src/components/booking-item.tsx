@@ -1,35 +1,155 @@
 import { Card, CardContent } from './ui/card';
 import { Avatar, AvatarImage } from './ui/avatar';
 import { Badge } from './ui/badge';
+import { Prisma } from '@prisma/client';
+import { format, isFuture } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from './ui/sheet';
+import Image from 'next/image';
+import PhoneItem from './phone-item';
 
-const BookingItem = () => {
+interface BookingItemProps {
+  booking: Prisma.BookingGetPayload<{
+    include: {
+      service: {
+        include: {
+          barbershop: true;
+        };
+      };
+    };
+  }>;
+}
+
+const BookingItem = ({ booking }: BookingItemProps) => {
+  const {
+    service: { barbershop },
+  } = booking;
+  const isConfirmed = isFuture(booking.date);
   return (
     <>
-      <h2 className='text-xs font-bold uppercase text-gray-400'>
-        AGENDAMENTOS
-      </h2>
+      <Sheet>
+        <SheetTrigger className='w-full'>
+          <Card className='min-w-[90%] mt-6'>
+            <CardContent className='flex justify-between p-0'>
+              <div className='flx flex-col gap-2 p-5 pl-5'>
+                <Badge
+                  className='w-fit'
+                  variant={isConfirmed ? 'default' : 'secondary'}
+                >
+                  {isConfirmed ? 'Confirmado' : 'Finalizado'}
+                </Badge>
+                <h3 className='font-semibold text-2xl'>
+                  {booking?.service.name}
+                </h3>
 
-      <Card className='mt-6'>
-        <CardContent className='flex justify-between p-0'>
-          <div className='flx flex-col gap-2 p-5 pl-5'>
-            <Badge>Confirmado</Badge>
-            <h3 className='font-semibold text-2xl'>Corte de Cabelo</h3>
+                <div className='flex items-center gap-2 mt-2'>
+                  <Avatar className='h-6 w-6'>
+                    <AvatarImage src={booking?.service.barbershop.imageUrl} />
+                  </Avatar>
+                  <h3 className='font-semibold text-2xl'>
+                    {booking?.service.barbershop.name}
+                  </h3>
+                </div>
+              </div>
 
-            <div className='flex items-center gap-2 mt-2'>
-              <Avatar className='h-6 w-6'>
-                <AvatarImage src='https://utfs.io/f/5832df58-cfd7-4b3f-b102-42b7e150ced2-16r.png' />
-              </Avatar>
-              <p className='text-sm'>Beer App</p>
+              <div className='flex flex-col items-center justify-center border-l-2 border-solid px-5'>
+                <p className='text-sm capitalize'>
+                  {format(booking.date, 'MMMM', { locale: ptBR })}
+                </p>
+                <p className='text-2xl'>
+                  {format(booking.date, 'dd', { locale: ptBR })}
+                </p>
+                <p className='text-sm'>
+                  {format(booking.date, 'HH:mm', { locale: ptBR })}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </SheetTrigger>
+        <SheetContent className='W-[90%]'>
+          <SheetHeader>
+            <SheetTitle className='text-left'>
+              Informações da Reserva
+            </SheetTitle>
+          </SheetHeader>
+          <div className='relative h-[180px] w-full items-center flex mt-6 rounded-xl'>
+            <Image
+              src='/map.png'
+              alt={`map barberia ${booking.service.barbershop.name}`}
+              fill
+              className='object-cover rounded-xl'
+            />
+            <Card className='z-50 mx-5 mb-3 w-full'>
+              <CardContent className='w-full px-5 py-3 gap-3'>
+                <Avatar>
+                  <AvatarImage src={barbershop.imageUrl} />
+                </Avatar>
+                <div>
+                  <h3>{barbershop.name}</h3>
+                  <p>{barbershop.address}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className='mt-6'>
+            <Badge
+              className='w-fit'
+              variant={isConfirmed ? 'default' : 'secondary'}
+            >
+              {isConfirmed ? 'Confirmado' : 'Finalizado'}
+            </Badge>
+            <Card className='mt-3 mb-6'>
+              <CardContent>
+                <div className='flex items-center justify-between gap-2 p-1'>
+                  <h2 className='font-bold'>{booking.service.name}</h2>
+                  <p className='font-bold text-sm text-primary'>
+                    {Intl.NumberFormat('pt-br', {
+                      style: 'currency',
+                      currency: 'BRL',
+                    }).format(Number(booking.service.price))}
+                  </p>
+                </div>
+                <div className='flex items-center justify-between p-1'>
+                  <h2 className='font-bold text-sm text-gray-400'>Data</h2>
+                  <p className='font-bold text-sm text-primary'>
+                    {format(booking.date, "d 'de' MMMM", {
+                      locale: ptBR,
+                    })}
+                  </p>
+                </div>
+                <div className='flex items-center justify-between p-1'>
+                  <h2 className='font-bold text-sm text-gray-400'>Horário</h2>
+                  <p className='font-bold text-sm text-primary'>
+                    {format(booking.date, 'HH:mm', {
+                      locale: ptBR,
+                    })}
+                  </p>
+                </div>
+                <div className='flex items-center justify-between p-1'>
+                  <h2 className='font-bold text-sm text-gray-400'>Barbearia</h2>
+                  <p className='font-bold text-sm text-primary'>
+                    {barbershop.name}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+            <div className='p-5 space-y-3'>
+              {barbershop.phones.map((phone, index) => (
+                <PhoneItem
+                  key={`${phone}-${index}`}
+                  phone={phone}
+                />
+              ))}
             </div>
           </div>
-
-          <div className='flex flex-col items-center justify-center border-l-2 border-solid px-5'>
-            <p className='text-sm'>Agosto</p>
-            <p className='text-sm'>05</p>
-            <p className='text-sm'>Agosto</p>
-          </div>
-        </CardContent>
-      </Card>
+        </SheetContent>
+      </Sheet>
     </>
   );
 };
