@@ -1,9 +1,10 @@
 import BookingItem from '@/components/booking-item';
 import Header from '@/components/header';
 import { authOptions } from '@/lib/auth';
-import { db } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { notFound } from 'next/navigation';
+import { getConfirmedBookings } from '../_data/get-confirmed-bookings';
+import { getConcludedBookings } from '../_data/get-concluded-bookings';
 
 const Booking = async () => {
   const session = await getServerSession(authOptions);
@@ -12,40 +13,9 @@ const Booking = async () => {
     return notFound();
   }
 
-  const confirmeBookings = await db.booking.findMany({
-    where: {
-      userId: (session.user as any).id,
-      date: {
-        gte: new Date(),
-      },
-    },
-    include: {
-      service: {
-        include: {
-          barbershop: true,
-        },
-      },
-    },
-    orderBy: {
-      date: 'asc',
-    },
-  });
+  const confirmeBookings = await getConfirmedBookings();
 
-  const concludeBookings = await db.booking.findMany({
-    where: {
-      userId: (session.user as any).id,
-      date: {
-        lt: new Date(),
-      },
-    },
-    include: {
-      service: {
-        include: {
-          barbershop: true,
-        },
-      },
-    },
-  });
+  const concludeBookings = await getConcludedBookings();
 
   return (
     <>
@@ -78,7 +48,7 @@ const Booking = async () => {
             {concludeBookings.map(booking => (
               <BookingItem
                 key={booking.id}
-                booking={booking}
+                booking={JSON.parse(JSON.stringify(booking))}
               />
             ))}
           </div>

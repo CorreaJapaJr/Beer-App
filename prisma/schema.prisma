@@ -93,8 +93,7 @@ model Booking {
   updatedAt DateTime          @updatedAt
 }
 
-
-enum OrderStatus{
+enum OrderStatus {
   PENDING
   IN_PREPARATION
   PAYMENT_CONFIRMED
@@ -102,7 +101,7 @@ enum OrderStatus{
   FINISHED
 }
 
-enum ConsumptionMethod{
+enum ConsumptionMethod {
   TAKEAWAY
   DINE_IN
 }
