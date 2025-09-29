@@ -18,6 +18,7 @@ const Header = () => {
               alt='logo '
               height={18}
               width={120}
+              className='rounded-xl'
             />
           </Link>
           <Sheet>

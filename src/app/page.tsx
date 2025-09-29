@@ -1,7 +1,6 @@
 import Header from '@/components/header';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 
 import { db } from '@/lib/prisma';
 
@@ -99,7 +98,7 @@ const Home = async () => {
         {confirmeBookings.length === 0 ? (
           <p className='text-sm text-gray-500'>Não há agendamentos.</p>
         ) : (
-          <div className='flex overflow-x-auto gap-3'>
+          <div className='flex overflow-auto gap-3'>
             {confirmeBookings.map(booking => (
               <BookingItem
                 key={booking.id}
@@ -132,16 +131,6 @@ const Home = async () => {
           ))}
         </div>
       </div>
-      <footer>
-        <Card>
-          <CardContent className='px-5 py-6'>
-            <p className='text-sm text-gray-400'>
-              2025 Copyright <span>JAPA </span>
-            </p>
-          </CardContent>
-        </Card>
-      </footer>
-      :
     </div>
   );
 };
